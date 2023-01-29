@@ -1,0 +1,23 @@
+{
+  "name": "plugin-basic-pagination",
+  "version": "1.0.0",
+  "description": "Plugin Para realizar una paginación básica",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gussware/plugin-basic-pagination.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gussware/plugin-basic-pagination/issues"
+  },
+  "homepage": "https://github.com/gussware/plugin-basic-pagination#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "jquery": "^3.6.3"
+  }
+}
