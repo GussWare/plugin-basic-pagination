@@ -42,30 +42,17 @@
     </div>
 
     <script id="roles-table-template" type="text/x-handlebars-template">
-        <table id="roles-table" class="datatables-demo table table-striped table-bordered table-responsive">
-            <thead>
-                <tr>
-                    <th data-name="id" style="width: 5%;"></th>
-                    <th data-name="name" style="width: 25%;">{{name}}</th>
-                    <th data-name="slug" style="width: 25%;">{{slug}}</th>
-                    <th data-name="description" style="width: 30%;">{{description}}</th>
-                    <th data-name="enabled" style="width: 5%;">{{enabled}}</th>
-                    <th data-name="id" style="width: 10%;">{{actions}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each data}}
-                    <tr>
-                        <td>{{id}}</td>
-                        <td>{{name}}</td>
-                        <td>{{slug}}</td>
-                        <td>{{description}}</td>
-                        <td>{{enabled}}</td>
-                        <td>{{actions}}</td>
-                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
+            <tr>
+                <td>{{id}}</td>
+                <td>{{name}}</td>
+                <td>{{slug}}</td>
+                <td>{{description}}</td>
+                <td>{{enabled}}</td>
+                <td>
+                    <a href="http://">Editar</a>
+                    <a href="http://">Eliminar</a>
+                </td>
+            </tr>
      </script>
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
