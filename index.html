@@ -49,8 +49,8 @@
                 <td>{{description}}</td>
                 <td>{{enabled}}</td>
                 <td>
-                    <a href="http://">Editar</a>
-                    <a href="http://">Eliminar</a>
+                    <a class="btn-edit" href="javascript:void(0);">Editar</a>
+                    <a class="btn-delete" href="javascript:void(0);">Eliminar</a>
                 </td>
             </tr>
      </script>
@@ -65,10 +65,34 @@
         $(document).ready(function () {
 
             $("#roles-table").BasicPagination({
-                apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
-                tableId: 'roles-table',
+                serverSide: {
+                    apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
+                },
+                paginationId: 'roles-table',
                 templateId: 'roles-table-template',
                 pagesContainerClass: 'roles-pages-container'
+            }).on("observerActions", function (event, pagination) {
+                var trTable = pagination.find('tbody').find('tr');
+
+                $.each(trTable, function (key, tr) {
+                    var btnEdit = $(tr).find('td').eq(5).find('a.btn-edit');
+                    var btnDelete = $(tr).find('td').eq(5).find('a.btn-delete');
+
+                    btnEdit.on('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        alert("clic btn Edit")
+                    });
+
+                    btnDelete.on('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        alert("clic btn Delete")
+                    });                    
+                });
+
             });
         });
     </script>

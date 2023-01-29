@@ -1,7 +1,7 @@
 (function ($) {
     $.fn.BasicPagination = function (options) {
         var settings = $.extend({
-            tableId: 'basic-pagination-table',
+            paginationId: 'basic-pagination-table',
             templateId: 'basic-template-row',
             pagesContainerClass: 'basic-pages-container',
             serverSide: {
@@ -22,7 +22,7 @@
             },
         }, options);
 
-        var $table = $('#' + settings.tableId);
+        var $basicPagination = $('#' + settings.paginationId);
         var $template = $('#' + settings.templateId);
         var $paginationContainer = $('.' + settings.pagesContainerClass);
 
@@ -34,7 +34,7 @@
 
         function getTableHeaders() {
             var headers = [];
-            $table.find('th').each(function () {
+            $basicPagination.find('th').each(function () {
                 headers.push($(this).data('name'));
             });
             return headers;
@@ -53,7 +53,7 @@
                 rows += compiledTemplate(row);
             });
 
-            $table.find('tbody').html(rows);
+            $basicPagination.find('tbody').html(rows);
         }
 
         function createPagination(currentPage, totalPages, totalRegister, totalResults, limit) {
@@ -232,13 +232,15 @@
 
         function callServerSide(page) {
             $.ajax({
-                url: settings.apiUrl,
+                url: settings.serverSide.apiUrl,
                 data: getData(page),
                 dataType: settings.serverSide.dataType,
                 method: settings.serverSide.method,
                 success: function (response) {
                     renderTable(response.results);
                     createPagination(response.page, response.totalPages, response.totalRegister, response.totalResults, response.limit);
+
+                    $basicPagination.trigger('observerActions', [$basicPagination]);
                 }
             });
         }
