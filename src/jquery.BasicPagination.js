@@ -1,10 +1,16 @@
 (function ($) {
     $.fn.BasicPagination = function (options) {
         var settings = $.extend({
-            apiUrl: '/api/data',
             tableId: 'basic-pagination-table',
             templateId: 'basic-template-row',
             pagesContainerClass: 'basic-pages-container',
+            serverSide: {
+                apiUrl: '/api/pagination',
+                method:"GET",
+                dataType:"json",
+                timesleep:1000,
+                advancedSearch:null
+            },
             pagination: {
                 results: "results",
                 maxBtnPagination: 6,
@@ -95,8 +101,9 @@
                 disableBtnNext = false;
             }
 
-            $.each($paginationContainer, function (key, pagination) {
+            $paginationContainer.html('')
 
+            $.each($paginationContainer, function (key, pagination) {      
                 var row = $("<div>").addClass("row");
                 row.appendTo(pagination);
 
@@ -136,7 +143,52 @@
                 btnEnd.appendTo(ulPagesContainer);
 
             });
+
+            observerPagination();
         }
+
+
+        function observerPagination() {
+            var btnGoPage = $paginationContainer.find("ul").find("li.item-go-page");
+
+            btnGoPage.on("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                currentPage = $(this).data("page");
+
+                callServerSide(currentPage);
+            });
+
+
+            var btnBack = $paginationContainer.find("ul").find("li.item-back");
+            btnBack.on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var btnStart = $paginationContainer.find("ul").find("li.item-start");
+                var page = btnStart.attr("data-page");
+
+                currentPage = ((parseInt(currentPage) - 1) < page) ? page : parseInt(currentPage) - 1;
+
+                callServerSide();
+            });
+
+            var btnNext = $paginationContainer.find("ul").find("li.item-next");
+            btnNext.on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var btnEnd = $paginationContainer.find("ul").find("li.item-end");
+                var page = btnEnd.attr("data-page");
+
+                currentPage = ((parseInt(currentPage) + 1) > page) ? page : parseInt(currentPage) + 1;
+
+                callServerSide();
+            });
+        }
+
+
 
         function makeLi(text, page, active, disabledBtn, css) {
             var li = $("<li></li>")
@@ -158,11 +210,7 @@
                 li.addClass(css);
             }
 
-            var btn = $("<a></a>")
-                .attr("href", "javascript:void(0)")
-                .addClass("page-link")
-                .text(text);
-
+            var btn = $("<a></a>").attr("href", "javascript:void(0)").addClass("page-link").text(text);
             btn.appendTo(li);
 
             return li;
@@ -182,10 +230,12 @@
             return text;
         }
 
-        function getData() {
+        function callServerSide(page) {
             $.ajax({
                 url: settings.apiUrl,
-                dataType: 'json',
+                data: getData(page),
+                dataType: settings.serverSide.dataType,
+                method: settings.serverSide.method,
                 success: function (response) {
                     renderTable(response.results);
                     createPagination(response.page, response.totalPages, response.totalRegister, response.totalResults, response.limit);
@@ -193,16 +243,28 @@
             });
         }
 
-        getData();
+        function getData(page) {
+            var data = {};
 
-        $paginationContainer.on('click', 'a', function (e) {
-            e.preventDefault();
-            var page = $(this).data('page');
-            if (page != currentPage) {
-                currentPage = page;
-                renderTable(data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage));
+            if (settings.serverSide.advancedSearch instanceof Function) {
+                data = settings.serverSide.advancedSearch.call(this);
+            } else {
+                $.each(settings.serverSide.advancedSearch, function (key, form) {
+                    let {name, value} = $(form).serializeArray();
+                    data[name] = value;
+                });
             }
-        });
+
+            if (page) {
+                currentPage = page;
+            }
+
+            data.page = currentPage;
+
+            return data;
+        }
+
+        callServerSide();
 
         return this;
     };
