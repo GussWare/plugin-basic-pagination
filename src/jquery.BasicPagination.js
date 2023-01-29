@@ -2,13 +2,14 @@
     $.fn.BasicPagination = function(options) {
         var settings = $.extend({
             apiUrl: '/api/data',
-            tableId: 'table-basic-pagination',
-            templateId: 'template-row'
+            tableId: 'basic-pagination-table',
+            templateId: 'basic-template-row',
+            pagesContainerClass: 'basic-pages-container'
         }, options);
         
         var $table = $('#' + settings.tableId);
         var $template = $('#' + settings.templateId);
-        var $paginationContainer = $('.roles-pages-container');
+        var $paginationContainer = $('.' + settings.pagesContainerClass);
         
         var currentPage = 1;
         var rowsPerPage = 10;
@@ -27,6 +28,7 @@
             var headers = getTableHeaders();
             var rows = '';
             var compiledTemplate = Handlebars.compile($template.html());
+
             $.each(data, function(index, item) {
                 var row = {};
                 $.each(headers, function(index, header) {
@@ -34,6 +36,7 @@
                 });
                 rows += compiledTemplate(row);
             });
+            
             $table.find('tbody').html(rows);
         }
         
@@ -51,10 +54,8 @@
                 url: settings.apiUrl,
                 dataType: 'json',
                 success: function(response) {
-                    data = response.data;
-                    totalPages = Math.ceil(data.length / rowsPerPage);
-                    renderTable(data.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage));
-                    createPagination(currentPage, totalPages);
+                    renderTable(response.results);
+                    createPagination(response.page, response.totalPages);
                 }
             });
         }

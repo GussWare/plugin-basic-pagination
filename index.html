@@ -6,18 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 
 <body>
     <div class="row">
         <div class="col-md-12">
             <div class="roles-pages-container buttons-pagination"></div>
-            <table id="table-roles" class="datatables-demo table table-striped table-bordered table-responsive">
+            <table id="roles-table" class="datatables-demo table table-striped table-bordered table-responsive">
                 <thead>
                     <tr>
                         <th data-name="id" style="width: 5%;"></th>
                         <th data-name="name" style="width: 25%;">
-                           name
+                            name
                         </th>
                         <th data-name="slug" style="width: 25%;">
                             slug
@@ -38,6 +40,52 @@
             <div class="roles-pages-container buttons-pagination"></div>
         </div>
     </div>
+
+    <script id="roles-table-template" type="text/x-handlebars-template">
+        <table id="roles-table" class="datatables-demo table table-striped table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th data-name="id" style="width: 5%;"></th>
+                    <th data-name="name" style="width: 25%;">{{name}}</th>
+                    <th data-name="slug" style="width: 25%;">{{slug}}</th>
+                    <th data-name="description" style="width: 30%;">{{description}}</th>
+                    <th data-name="enabled" style="width: 5%;">{{enabled}}</th>
+                    <th data-name="id" style="width: 10%;">{{actions}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each data}}
+                    <tr>
+                        <td>{{id}}</td>
+                        <td>{{name}}</td>
+                        <td>{{slug}}</td>
+                        <td>{{description}}</td>
+                        <td>{{enabled}}</td>
+                        <td>{{actions}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+     </script>
+
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="src/jquery.BasicPagination.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#roles-table").BasicPagination({
+                apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
+                tableId: 'roles-table',
+                templateId: 'roles-table-template',
+                pagesContainerClass: 'roles-pages-container'
+            });
+        });
+    </script>
+
 </body>
 
 </html>
