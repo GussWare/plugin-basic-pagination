@@ -64,7 +64,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
-            $("#roles-table").BasicPagination({
+            var RolesTable = $("#roles-table").BasicPagination({
                 serverSide: {
                     apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
                 },
@@ -94,6 +94,13 @@
                 });
 
             });
+
+
+            setTimeout(function(){
+                alert("se ejecutara el metodo callServerSide();");
+
+                RolesTable.callServerSide();
+            }, 3000);
         });
     </script>
 

@@ -171,7 +171,7 @@
 
                 currentPage = ((parseInt(currentPage) - 1) < page) ? page : parseInt(currentPage) - 1;
 
-                callServerSide();
+                callServerSide(currentPage);
             });
 
             var btnNext = $paginationContainer.find("ul").find("li.item-next");
@@ -184,15 +184,14 @@
 
                 currentPage = ((parseInt(currentPage) + 1) > page) ? page : parseInt(currentPage) + 1;
 
-                callServerSide();
+                callServerSide(currentPage);
             });
         }
 
 
 
         function makeLi(text, page, active, disabledBtn, css) {
-            var li = $("<li></li>")
-                .addClass("page-item");
+            var li = $("<li></li>").addClass("page-item");
 
             if (page) {
                 li.attr("data-page", page);
@@ -259,6 +258,8 @@
 
             if (page) {
                 currentPage = page;
+            } else {
+                currentPage = 1;
             }
 
             data.page = currentPage;
@@ -267,6 +268,10 @@
         }
 
         callServerSide();
+
+
+        // retornamos metodos publicos que necesitemos
+        this.callServerSide = callServerSide;
 
         return this;
     };
