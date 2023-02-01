@@ -9,7 +9,8 @@
                 method:"GET",
                 dataType:"json",
                 timesleep:1000,
-                advancedSearch:null
+                advancedSearch:null, 
+                extraData:null,
             },
             pagination: {
                 results: "results",
@@ -191,7 +192,7 @@
 
 
         function makeLi(text, page, active, disabledBtn, css) {
-            var li = $("<li></li>").addClass("page-item");
+            var li = $("<li>").addClass("page-item");
 
             if (page) {
                 li.attr("data-page", page);
@@ -209,7 +210,7 @@
                 li.addClass(css);
             }
 
-            var btn = $("<a></a>").attr("href", "javascript:void(0)").addClass("page-link").text(text);
+            var btn = $("<a>").attr("href", "javascript:void(0)").addClass("page-link").text(text);
             btn.appendTo(li);
 
             return li;
@@ -254,7 +255,7 @@
                     let {name, value} = $(form).serializeArray();
                     data[name] = value;
                 });
-            }
+            }            
 
             if (page) {
                 currentPage = page;
@@ -263,6 +264,14 @@
             }
 
             data.page = currentPage;
+
+            if(settings.serverSide.extraData instanceof Function) {
+                var extraData = settings.serverSide.extraData.call(this);
+                
+                $.each(extraData, function(key, value){
+                    data[key] = value;
+                });
+            }
 
             return data;
         }
