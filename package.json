@@ -1,6 +1,6 @@
 {
   "name": "plugin-basic-pagination",
-  "version": "1.0.0",
+  "version": "v0.1.2-alpha",
   "description": "Plugin Para realizar una paginación básica",
   "main": "index.js",
   "scripts": {
