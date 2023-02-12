@@ -55,7 +55,7 @@
             </tr>
      </script>
 
-    
+
 
     <script id="roles-pages-template" type="text/x-handlebars-template">
        <div class="row">
@@ -97,6 +97,21 @@
             var RolesTable = $("#roles-table").BasicPagination({
                 serverSide: {
                     apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
+                    method: "GET",
+                    dataType: "json",
+                    timesleep: 1000,
+                    advancedSearch: null,
+                    extraData: null,
+                },
+                pagination: {
+                    results: "results",
+                    maxBtnPagination: 6,
+                    textStart: "Inicio",
+                    textBack: "Atras",
+                    textNext: "Siguiente",
+                    textEnd: "Fin",
+                    textPagination: "Mostrando {0} resultados de {1} resgistros.",
+                    classButtonAction: ".item-go-page"
                 },
                 paginationId: 'roles-table',
                 templateId: 'roles-table-template',

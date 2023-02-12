@@ -20,7 +20,8 @@
                 textBack: "Atras",
                 textNext: "Siguiente",
                 textEnd: "Fin",
-                textPagination: "Mostrando {0} resultados de {1} resgistros."
+                textPagination: "Mostrando {0} resultados de {1} resgistros.",
+                classButtonAction: ".item-go-page"
             },
         }, options);
 
@@ -169,7 +170,7 @@
         }
 
         function observerPagination() {
-            var btnGoPage = $paginationContainer.find("ul").find("li.item-go-page");
+            var btnGoPage = $paginationContainer.find(settings.pagination.classButtonAction);
 
             btnGoPage.on("click", function (e) {
                 e.preventDefault();
