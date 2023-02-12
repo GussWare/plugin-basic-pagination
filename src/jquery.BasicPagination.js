@@ -3,14 +3,15 @@
         var settings = $.extend({
             paginationId: 'basic-pagination-table',
             templateId: 'basic-template-row',
+            paginationTemplateId: 'roles-pages-template',
             pagesContainerClass: 'basic-pages-container',
             serverSide: {
                 apiUrl: '/api/pagination',
-                method:"GET",
-                dataType:"json",
-                timesleep:1000,
-                advancedSearch:null, 
-                extraData:null,
+                method: "GET",
+                dataType: "json",
+                timesleep: 1000,
+                advancedSearch: null,
+                extraData: null,
             },
             pagination: {
                 results: "results",
@@ -58,96 +59,114 @@
         }
 
         function createPagination(currentPage, totalPages, totalRegister, totalResults, limit) {
-
+            var btnBack = null;
+            var btnNext = null;
             var pageBack = null;
             var pageNext = null;
-            var numButtons = Math.floor(settings.pagination.maxBtnPagination / 2);
             var disableBtnBack = false;
             var disableBtnNext = false;
-            var activeBtnBack = false;
-            var activeBtnNext = false;
+            var numButtons = Math.floor(settings.pagination.maxBtnPagination / 2);
 
             if (currentPage === 1 && currentPage === totalPages) {
-                pageBack = 1;
-                pageNext = 1;
+                btnBack = 1;
+                btnNext = 1;
 
                 disableBtnBack = true;
                 disableBtnNext = true;
 
             } else if (currentPage > 1 && currentPage === totalPages) {
-                pageBack = totalPages - settings.pagination.maxBtnPagination;
+                btnBack = totalPages - settings.pagination.maxBtnPagination;
 
-                if (pageBack < 1) {
-                    pageBack = 1;
+                if (btnBack < 1) {
+                    btnBack = 1;
                 }
 
-                pageNext = totalPages;
+                btnNext = totalPages;
 
                 disableBtnBack = false;
                 disableBtnNext = true;
 
             } else if (currentPage >= 1 && currentPage <= totalPages) {
-                pageBack = currentPage - numButtons;
-                pageNext = currentPage + numButtons;
+                btnBack = currentPage - numButtons;
+                btnNext = currentPage + numButtons;
 
-                if (pageBack < 1) {
-                    pageBack = 1;
+                if (btnBack < 1) {
+                    btnBack = 1;
                 }
 
-                if (pageNext > totalPages) {
-                    pageNext = totalPages;
+                if (btnNext > totalPages) {
+                    btnNext = totalPages;
                 }
 
                 disableBtnBack = false;
                 disableBtnNext = false;
             }
 
+            pageBack = currentPage - 1;
+
+            if (pageBack < 1) {
+                pageBack = 1;
+            }
+
+            pageNext = currentPage + 1;
+
+            if(pageNext > totalPages) {
+                pageNext = totalPages;
+            }
+
             $paginationContainer.html('')
 
-            $.each($paginationContainer, function (key, pagination) {      
-                var row = $("<div>").addClass("row");
-                row.appendTo(pagination);
-
-                var divContainerDesc = $("<div>").addClass("col-md-6");
-                var divContainerPages = $("<div>").addClass("col-md-6");
-
-                divContainerDesc.text(textPagination(totalRegister, totalResults, limit)).appendTo(row);
-                divContainerPages.appendTo(row);
-
-                var nav = $("<nav>");
-                nav.appendTo(divContainerPages);
-
-
-                //Boton Inicio
-                var ulPagesContainer = $("<ul></ul>").addClass("pagination justify-content-end");
-                ulPagesContainer.appendTo(nav);
-
-                var btnStart = makeLi(settings.pagination.textStart, 1, false, disableBtnBack, 'item-go-page item-start');
-                btnStart.appendTo(ulPagesContainer);
-
-                var btnBack = makeLi(settings.pagination.textBack, null, false, disableBtnBack, 'item-back');
-                btnBack.appendTo(ulPagesContainer);
-
-                var btnPages = null;
-                var disableBtn = false;
-                for (var i = pageBack; i <= pageNext; i++) {
-                    disableBtn = (parseInt(currentPage) === parseInt(i));
-
-                    btnPages = makeLi(i, i, disableBtn, disableBtn, 'item-go-page');
-                    btnPages.appendTo(ulPagesContainer);
+            var paginationButtons = {
+                textDescription: textPagination(totalRegister, totalResults, limit),
+                buttons: {
+                    start: {
+                        text: settings.pagination.textStart,
+                        page: 1,
+                        active: disableBtnBack,
+                        enabled: disableBtnBack,
+                    },
+                    back: {
+                        text: settings.pagination.textBack,
+                        page: pageBack,
+                        active: disableBtnBack,
+                        enabled: disableBtnBack,
+                    },
+                    pages: [],
+                    next: {
+                        text: settings.pagination.textNext,
+                        page: pageNext,
+                        active: disableBtnNext,
+                        enabled: disableBtnNext,
+                    },
+                    end: {
+                        text: settings.pagination.textEnd,
+                        page: totalPages,
+                        active: disableBtnNext,
+                        enabled: disableBtnNext,
+                    }
                 }
+            };
 
-                var btnNext = makeLi(settings.pagination.textNext, null, false, disableBtnNext, 'item-next');
-                btnNext.appendTo(ulPagesContainer);
+            for (var i = btnBack; i <= btnNext; i++) {
+                disableBtn = (parseInt(currentPage) === parseInt(i));
 
-                var btnEnd = makeLi(settings.pagination.textEnd, totalPages, false, disableBtnNext, 'item-go-page item-end');
-                btnEnd.appendTo(ulPagesContainer);
+                paginationButtons.buttons.pages.push({
+                    text: i,
+                    page: i,
+                    active: disableBtn,
+                    enabled: disableBtn,
+                    class: "item-go"
+                });
+            }
 
-            });
+            var $paginationTemplate = $('#' + settings.paginationTemplateId);
+            var compiledTemplate = Handlebars.compile($paginationTemplate.html());
+            var paginationButtonsCompiled = compiledTemplate(paginationButtons);
+
+            $paginationContainer.html(paginationButtonsCompiled);
 
             observerPagination();
         }
-
 
         function observerPagination() {
             var btnGoPage = $paginationContainer.find("ul").find("li.item-go-page");
@@ -160,60 +179,6 @@
 
                 callServerSide(currentPage);
             });
-
-
-            var btnBack = $paginationContainer.find("ul").find("li.item-back");
-            btnBack.on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                var btnStart = $paginationContainer.find("ul").find("li.item-start");
-                var page = btnStart.attr("data-page");
-
-                currentPage = ((parseInt(currentPage) - 1) < page) ? page : parseInt(currentPage) - 1;
-
-                callServerSide(currentPage);
-            });
-
-            var btnNext = $paginationContainer.find("ul").find("li.item-next");
-            btnNext.on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                var btnEnd = $paginationContainer.find("ul").find("li.item-end");
-                var page = btnEnd.attr("data-page");
-
-                currentPage = ((parseInt(currentPage) + 1) > page) ? page : parseInt(currentPage) + 1;
-
-                callServerSide(currentPage);
-            });
-        }
-
-
-
-        function makeLi(text, page, active, disabledBtn, css) {
-            var li = $("<li>").addClass("page-item");
-
-            if (page) {
-                li.attr("data-page", page);
-            }
-
-            if (active) {
-                li.addClass("active");
-            }
-
-            if (disabledBtn) {
-                li.addClass("disabled");
-            }
-
-            if (css) {
-                li.addClass(css);
-            }
-
-            var btn = $("<a>").attr("href", "javascript:void(0)").addClass("page-link").text(text);
-            btn.appendTo(li);
-
-            return li;
         }
 
         function textPagination(totalRegister, totalResults, limit) {
@@ -252,10 +217,10 @@
                 data = settings.serverSide.advancedSearch.call(this);
             } else {
                 $.each(settings.serverSide.advancedSearch, function (key, form) {
-                    let {name, value} = $(form).serializeArray();
+                    let { name, value } = $(form).serializeArray();
                     data[name] = value;
                 });
-            }            
+            }
 
             if (page) {
                 currentPage = page;
@@ -265,10 +230,10 @@
 
             data.page = currentPage;
 
-            if(settings.serverSide.extraData instanceof Function) {
+            if (settings.serverSide.extraData instanceof Function) {
                 var extraData = settings.serverSide.extraData.call(this);
-                
-                $.each(extraData, function(key, value){
+
+                $.each(extraData, function (key, value) {
                     data[key] = value;
                 });
             }
