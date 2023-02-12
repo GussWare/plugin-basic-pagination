@@ -3,7 +3,7 @@
         var settings = $.extend({
             paginationId: 'basic-pagination-table',
             templateId: 'basic-template-row',
-            paginationTemplateId: 'roles-pages-template',
+            paginationTemplateId: 'basic-pages-template',
             pagesContainerClass: 'basic-pages-container',
             serverSide: {
                 apiUrl: '/api/pagination',

@@ -125,6 +125,7 @@ $(document).ready(function () {
                 },
                 paginationId: 'roles-table',
                 templateId: 'roles-table-template',
+                paginationTemplateId: 'roles-pages-template',
                 pagesContainerClass: 'roles-pages-container'
             }).on("observerActions", function (event, pagination) {
                 var trTable = pagination.find('tbody').find('tr');
