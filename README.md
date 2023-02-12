@@ -13,7 +13,7 @@ Para utilizar instalar el plugin es necesario utilizar npm
 
  
 ## Usage/Examples  
-Hay que tener un documento html5 con la siguiente estructura
+Hay que tener un documento html5 con la siguiente estructura, como puedes notar existen 2 templates para que el desarrollador elija la manera de como se mostraran el paginado y la paginación. El plugin ya no se encarga de poner lo botones ni nada. Ahora se hace desde los templates de handlebars
 ~~~html  
 <!DOCTYPE html>
 <html lang="en">
@@ -72,10 +72,42 @@ Hay que tener un documento html5 con la siguiente estructura
             </tr>
      </script>
 
+    
+
+    <script id="roles-pages-template" type="text/x-handlebars-template">
+       <div class="row">
+            <div class="col-md-6">{{textDescription}}</div>
+            <div class="col-md-6">
+                <nav>
+                    <ul class="pagination justify-content-end">
+                        <li class="item-go-page page-item item-start {{#if buttons.start.disabled}} disabled {{/if}}" data-page="{{buttons.start.page}}"><a href="javascript:void(0)"
+                                class="page-link">{{buttons.start.text}}</a></li>
+
+
+                        <li class="item-go-page page-item item-back {{#if buttons.back.disabled}} disabled {{/if}}" data-page="{{buttons.back.page}}" ><a href="javascript:void(0)" class="page-link">{{buttons.back.text}}</a></li>
+
+
+                        {{#each buttons.pages}}
+                                <li class="item-go-page page-item {{#if active}} active {{/if}} {{#if disabled}} disabled {{/if}}" data-page="{{page}}" ><a href="javascript:void(0)"
+                                    class="page-link">{{text}}</a></li>         
+                        {{/each}}
+
+                        
+                        <li class="item-go-page item-next  {{#if buttons.next.disabled}} disabled {{/if}}" data-page="{{buttons.next.page}}" ><a href="javascript:void(0)" class="page-link">{{buttons.next.text}}</a></li>
+
+                        <li class="item-go-page item-end {{#if buttons.end.disabled}} disabled {{/if}}" data-page="{{buttons.end.page}}" ><a href="javascript:void(0)"
+                                class="page-link">{{buttons.end.text}}</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </script>
+
     <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="node_modules/handlebars/dist/handlebars.js"></script>
     <script src="src/jquery.BasicPagination.js"></script>
+
 
 </body>
 
@@ -117,13 +149,6 @@ $(document).ready(function () {
                 });
 
             });
-
-
-            setTimeout(function(){
-                alert("se ejecutara el metodo callServerSide();");
-
-                RolesTable.callServerSide();
-            }, 3000);
         });
 ~~~
 
