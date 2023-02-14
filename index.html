@@ -102,6 +102,28 @@
                     timesleep: 1000,
                     advancedSearch: null,
                     extraData: null,
+                    fnEventsCallback: function(pagination) {
+                        var trTable = pagination.find('tbody').find('tr');
+
+                        $.each(trTable, function (key, tr) {
+                            var btnEdit = $(tr).find('td').eq(5).find('a.btn-edit');
+                            var btnDelete = $(tr).find('td').eq(5).find('a.btn-delete');
+
+                            btnEdit.on('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                alert("clic btn Edit")
+                            });
+
+                            btnDelete.on('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                alert("clic btn Delete")
+                            });                    
+                        });
+                    }
                 },
                 pagination: {
                     results: "results",
@@ -117,27 +139,6 @@
                 templateId: 'roles-table-template',
                 paginationTemplateId: 'roles-pages-template',
                 pagesContainerClass: 'roles-pages-container'
-            }).on("observerActions", function (event, pagination) {
-                var trTable = pagination.find('tbody').find('tr');
-
-                $.each(trTable, function (key, tr) {
-                    var btnEdit = $(tr).find('td').eq(5).find('a.btn-edit');
-                    var btnDelete = $(tr).find('td').eq(5).find('a.btn-delete');
-
-                    btnEdit.on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        alert("clic btn Edit")
-                    });
-
-                    btnDelete.on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        alert("clic btn Delete")
-                    });
-                });
             });
         });
     </script>

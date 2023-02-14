@@ -1,6 +1,6 @@
  
 # Plugin Basic Pagination 
-Este plugin proporciona una solución de paginación sencilla y eficiente para tus proyectos en jQuery. Manteniento la funcionalidad del paginado por separado de la presentación. Esto te permite a ti elegir si la paginación se muestra en tabla o en una lista o en algun otro elemento. 
+Este plugin proporciona una solución de paginación sencilla y eficiente para tus proyectos en jQuery. Manteniento la funcionalidad del paginado por separado de la presentación. Esto te permite a ti elegir si la paginación se muestra en tabla o en una lista o en algun otro elemento para su presentación. 
 
  
  
@@ -120,35 +120,50 @@ Puedes agregar dentro del mismo documento el siguiente codigo javascript o bien 
 $(document).ready(function () {
 
             var RolesTable = $("#roles-table").BasicPagination({
-                serverSide: {
+                 serverSide: {
                     apiUrl: 'http://localhost/boilerplate-codeigniter3/roles/pagination',
+                    method: "GET",
+                    dataType: "json",
+                    timesleep: 1000,
+                    advancedSearch: null,
+                    extraData: null,
+                    fnEventsCallback: function(pagination) {
+                        var trTable = pagination.find('tbody').find('tr');
+
+                        $.each(trTable, function (key, tr) {
+                            var btnEdit = $(tr).find('td').eq(5).find('a.btn-edit');
+                            var btnDelete = $(tr).find('td').eq(5).find('a.btn-delete');
+
+                            btnEdit.on('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                alert("clic btn Edit")
+                            });
+
+                            btnDelete.on('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                alert("clic btn Delete")
+                            });                    
+                        });
+                    }
+                },
+                pagination: {
+                    results: "results",
+                    maxBtnPagination: 6,
+                    textStart: "Inicio",
+                    textBack: "Atras",
+                    textNext: "Siguiente",
+                    textEnd: "Fin",
+                    textPagination: "Mostrando {0} resultados de {1} resgistros.",
+                    classButtonAction: ".item-go-page"
                 },
                 paginationId: 'roles-table',
                 templateId: 'roles-table-template',
                 paginationTemplateId: 'roles-pages-template',
                 pagesContainerClass: 'roles-pages-container'
-            }).on("observerActions", function (event, pagination) {
-                var trTable = pagination.find('tbody').find('tr');
-
-                $.each(trTable, function (key, tr) {
-                    var btnEdit = $(tr).find('td').eq(5).find('a.btn-edit');
-                    var btnDelete = $(tr).find('td').eq(5).find('a.btn-delete');
-
-                    btnEdit.on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        alert("clic btn Edit")
-                    });
-
-                    btnDelete.on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        alert("clic btn Delete")
-                    });                    
-                });
-
             });
         });
 ~~~

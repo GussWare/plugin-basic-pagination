@@ -12,6 +12,7 @@
                 timesleep: 1000,
                 advancedSearch: null,
                 extraData: null,
+                fnEventsCallback: function(){}
             },
             pagination: {
                 results: "results",
@@ -206,7 +207,7 @@
                     renderTable(response.results);
                     createPagination(response.page, response.totalPages, response.totalRegister, response.totalResults, response.limit);
 
-                    $basicPagination.trigger('observerActions', [$basicPagination]);
+                    settings.serverSide.fnEventsCallback($basicPagination);
                 }
             });
         }
